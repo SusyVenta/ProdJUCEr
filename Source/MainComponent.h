@@ -44,6 +44,7 @@ private:
     juce::Slider gainSlider;
     juce::Slider volumeSlider;
     juce::Slider speedSlider;
+    juce::Slider positionSlider;
 
     juce::Random rand; // for random sampling aka white noise
 
@@ -58,14 +59,7 @@ private:
 
     void effectsMenuChanged();
 
-    juce::AudioFormatManager formatManager;
-    std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
-    juce::AudioTransportSource transportSource;
-
     std::unique_ptr<juce::FileChooser> chooser;
-    void loadURL(juce::URL audioURL);
-
-    juce::ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
 
     DJAudioPlayer player1;
 

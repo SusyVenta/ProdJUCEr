@@ -25,6 +25,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(volumeSlider);
     addAndMakeVisible(loadButton);
     addAndMakeVisible(speedSlider);
+    addAndMakeVisible(positionSlider);
     
 
     playButton.addListener(this);
@@ -33,9 +34,10 @@ MainComponent::MainComponent()
     volumeSlider.addListener(this);
     speedSlider.addListener(this);
     loadButton.addListener(this);
+    positionSlider.addListener(this);
 
-    gainSlider.setRange(0.00001, 1);
-    volumeSlider.setRange(0.0001, 1);
+    volumeSlider.setRange(0.0, 1.0);
+    positionSlider.setRange(0.0, 1.0);
 
     /* sound effects menu */
     addAndMakeVisible(effectsMenu);
@@ -70,21 +72,23 @@ void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate
 
     chosenEffect = "Plain";
 
-    formatManager.registerBasicFormats();
-
-    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
-    resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
 };
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {   
+    /*
     if (!playing)
     {
         bufferToFill.clearActiveBufferRegion();
+        
         return;
     }
 
-    resampleSource.getNextAudioBlock(bufferToFill);
+    resampleSource.getNextAudioBlock(bufferToFill);*/
+    player1.getNextAudioBlock(bufferToFill);
+
+
     /*if (!playing)
     {
         bufferToFill.clearActiveBufferRegion();
@@ -122,7 +126,7 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
 
     // For more details, see the help for AudioProcessor::releaseResources()
-    transportSource.releaseResources();
+    player1.releaseResources();
 }
 
 //==============================================================================
@@ -149,6 +153,7 @@ void MainComponent::resized()
     gainSlider.setBounds(0, rowHeight * 3, getWidth(), rowHeight);
     volumeSlider.setBounds(0, rowHeight * 4, getWidth(), rowHeight);
     speedSlider.setBounds(0, rowHeight * 5, getWidth(), rowHeight);
+    positionSlider.setBounds(0, rowHeight * 6, getWidth(), rowHeight);
     loadButton.setBounds(getWidth() * 0.8, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     
     DBG("MainComponent::resized");
@@ -159,8 +164,8 @@ void MainComponent::resized()
 void MainComponent::buttonClicked(juce::Button* button) {
     if (button == &playButton)
     {
-        transportSource.setPosition(0);
-        transportSource.start();
+        player1.setPosition(0);
+        player1.start();
         dphase = 0;
         playing = true;
         
@@ -168,7 +173,7 @@ void MainComponent::buttonClicked(juce::Button* button) {
     if (button == &stopButton)
     {
         playing = false;
-        transportSource.stop();
+        player1.stop();
     }
     if (button == &loadButton)
     {   
@@ -185,7 +190,7 @@ void MainComponent::buttonClicked(juce::Button* button) {
 
                 if (file.existsAsFile())
                 {
-                    loadURL(juce::URL{ fileChooser.getResult() });
+                    player1.loadURL(juce::URL{ fileChooser.getResult() });
                 }
             });
     }
@@ -196,13 +201,16 @@ void MainComponent::sliderValueChanged(juce::Slider* slider) {
         DBG("MainComponent::sliderValueChanged: gainSlider " << gainSlider.getValue());
         dphase = gainSlider.getValue();
         gain = gainSlider.getValue();
-        transportSource.setGain(gain);
+        player1.setGain(gain);
     }
     if (slider == &volumeSlider) {
-        transportSource.setGain(slider->getValue());
+        player1.setGain(slider->getValue());
     }
     if (slider == &speedSlider) {
-        resampleSource.setResamplingRatio(slider->getValue());
+        player1.setSpeed(slider->getValue());
+    }
+    if (slider == &positionSlider) {
+        player1.setRelativePosition(slider->getValue());
     }
 }
 
@@ -214,12 +222,3 @@ void MainComponent::effectsMenuChanged() {
     }
     DBG("chosenEffect: " << effectsMenu.getText());
 }
-
-void MainComponent::loadURL(juce::URL audioURL) {
-    auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
-    if (reader != nullptr) { // good file
-        std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
-        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-        readerSource.reset(newSource.release());
-    };
-};

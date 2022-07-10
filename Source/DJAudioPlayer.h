@@ -24,7 +24,15 @@ public:
     void setGain(double gain);
     void setSpeed(double ratio);
     void setPosition(double posInSeconds);
+    void setRelativePosition(double pos);
 
     void start();
     void stop();
+
+private:
+    juce::AudioFormatManager formatManager;
+    std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
+    juce::AudioTransportSource transportSource;
+
+    juce::ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
 };
