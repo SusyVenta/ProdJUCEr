@@ -22,15 +22,20 @@ MainComponent::MainComponent()
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(gainSlider);
+    addAndMakeVisible(volumeSlider);
     addAndMakeVisible(loadButton);
+    addAndMakeVisible(speedSlider);
     
 
     playButton.addListener(this);
     stopButton.addListener(this);
     gainSlider.addListener(this);
+    volumeSlider.addListener(this);
+    speedSlider.addListener(this);
     loadButton.addListener(this);
 
     gainSlider.setRange(0.00001, 1);
+    volumeSlider.setRange(0.0001, 1);
 
     /* sound effects menu */
     addAndMakeVisible(effectsMenu);
@@ -66,21 +71,20 @@ void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate
     chosenEffect = "Plain";
 
     formatManager.registerBasicFormats();
-    juce::URL audioURL{ "file:///C:\\Users\\ventafri\\Desktop\\Uni\\OOP\\uni_year2_OOP\\programming\\DJApp\\tracks/aon_inspired.mp3"};
 
-    auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
-    if (reader != nullptr) { // good file
-        std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
-        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-        readerSource.reset(newSource.release());
-        transportSource.start();
-    };
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
 };
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {   
-    transportSource.getNextAudioBlock(bufferToFill);
+    if (!playing)
+    {
+        bufferToFill.clearActiveBufferRegion();
+        return;
+    }
+
+    resampleSource.getNextAudioBlock(bufferToFill);
     /*if (!playing)
     {
         bufferToFill.clearActiveBufferRegion();
@@ -143,6 +147,8 @@ void MainComponent::resized()
     playButton.setBounds(0, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     stopButton.setBounds(getWidth() / 7, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     gainSlider.setBounds(0, rowHeight * 3, getWidth(), rowHeight);
+    volumeSlider.setBounds(0, rowHeight * 4, getWidth(), rowHeight);
+    speedSlider.setBounds(0, rowHeight * 5, getWidth(), rowHeight);
     loadButton.setBounds(getWidth() * 0.8, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     
     DBG("MainComponent::resized");
@@ -153,17 +159,20 @@ void MainComponent::resized()
 void MainComponent::buttonClicked(juce::Button* button) {
     if (button == &playButton)
     {
+        transportSource.setPosition(0);
+        transportSource.start();
+        dphase = 0;
         playing = true;
-        if (chosenEffect == "Siren") {
-            dphase = 0;
-        }
+        
     }
     if (button == &stopButton)
     {
         playing = false;
+        transportSource.stop();
     }
     if (button == &loadButton)
     {   
+        /* load mp3 file to play */
         chooser = std::make_unique<juce::FileChooser>(
             "Select a file to play..",
             juce::File{},
@@ -173,6 +182,7 @@ void MainComponent::buttonClicked(juce::Button* button) {
         chooser->launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& fileChooser)
             {
                 juce::File file = fileChooser.getResult();
+
                 if (file.existsAsFile())
                 {
                     loadURL(juce::URL{ fileChooser.getResult() });
@@ -186,6 +196,13 @@ void MainComponent::sliderValueChanged(juce::Slider* slider) {
         DBG("MainComponent::sliderValueChanged: gainSlider " << gainSlider.getValue());
         dphase = gainSlider.getValue();
         gain = gainSlider.getValue();
+        transportSource.setGain(gain);
+    }
+    if (slider == &volumeSlider) {
+        transportSource.setGain(slider->getValue());
+    }
+    if (slider == &speedSlider) {
+        resampleSource.setResamplingRatio(slider->getValue());
     }
 }
 
@@ -204,6 +221,5 @@ void MainComponent::loadURL(juce::URL audioURL) {
         std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
         transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
         readerSource.reset(newSource.release());
-        transportSource.start();
     };
 };

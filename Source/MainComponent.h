@@ -41,6 +41,8 @@ private:
     juce::TextButton stopButton{ "STOP" };
     juce::TextButton loadButton{ "LOAD" };
     juce::Slider gainSlider;
+    juce::Slider volumeSlider;
+    juce::Slider speedSlider;
 
     juce::Random rand; // for random sampling aka white noise
 
@@ -61,6 +63,8 @@ private:
 
     std::unique_ptr<juce::FileChooser> chooser;
     void loadURL(juce::URL audioURL);
+
+    juce::ResamplingAudioSource resampleSource{ &transportSource, false, 2 };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent);
 };
