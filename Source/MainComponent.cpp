@@ -22,11 +22,13 @@ MainComponent::MainComponent()
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(gainSlider);
+    addAndMakeVisible(loadButton);
     
 
     playButton.addListener(this);
     stopButton.addListener(this);
     gainSlider.addListener(this);
+    loadButton.addListener(this);
 
     gainSlider.setRange(0.00001, 1);
 
@@ -141,6 +143,7 @@ void MainComponent::resized()
     playButton.setBounds(0, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     stopButton.setBounds(getWidth() / 7, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     gainSlider.setBounds(0, rowHeight * 3, getWidth(), rowHeight);
+    loadButton.setBounds(getWidth() * 0.8, rowHeight * 2, getWidth() / 8, rowHeight / 2);
     
     DBG("MainComponent::resized");
 
@@ -158,6 +161,23 @@ void MainComponent::buttonClicked(juce::Button* button) {
     if (button == &stopButton)
     {
         playing = false;
+    }
+    if (button == &loadButton)
+    {   
+        chooser = std::make_unique<juce::FileChooser>(
+            "Select a file to play..",
+            juce::File{},
+            "*.mp3"
+            );
+        auto chooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
+        chooser->launchAsync(juce::FileBrowserComponent::canSelectFiles, [this](const juce::FileChooser& fileChooser)
+            {
+                juce::File file = fileChooser.getResult();
+                if (file.existsAsFile())
+                {
+                    loadURL(juce::URL{ fileChooser.getResult() });
+                }
+            });
     }
 }
 
@@ -177,3 +197,13 @@ void MainComponent::effectsMenuChanged() {
     }
     DBG("chosenEffect: " << effectsMenu.getText());
 }
+
+void MainComponent::loadURL(juce::URL audioURL) {
+    auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
+    if (reader != nullptr) { // good file
+        std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
+        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+        readerSource.reset(newSource.release());
+        transportSource.start();
+    };
+};
