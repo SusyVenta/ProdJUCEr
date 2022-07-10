@@ -6,8 +6,37 @@
     <GROUP id="{1CE3D6A4-0EB3-1595-A471-7A6F7028859A}" name="Source">
       <FILE id="frNHD7" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="b81BGN" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="RgmXEs" name="DJAudioPlayer.cpp" compile="1" resource="0"
+            file="Source/DJAudioPlayer.cpp"/>
+      <FILE id="NGIDch" name="DJAudioPlayer.h" compile="0" resource="0" file="Source/DJAudioPlayer.h"/>
       <FILE id="Fz4V1P" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+    </GROUP>
+    <GROUP id="{D34EC24A-B65C-7FD9-948D-E982CEDEAEC3}" name="tracks">
+      <FILE id="JbRGKb" name="01-180813_1305.mp3" compile="0" resource="1"
+            file="tracks/01-180813_1305.mp3"/>
+      <FILE id="aWWkCR" name="aon_inspired.mp3" compile="0" resource="1"
+            file="tracks/aon_inspired.mp3"/>
+      <FILE id="fKuUeo" name="bad_frog.mp3" compile="0" resource="1" file="tracks/bad_frog.mp3"/>
+      <FILE id="GrBeMQ" name="bleep_2.mp3" compile="0" resource="1" file="tracks/bleep_2.mp3"/>
+      <FILE id="GllYy4" name="bleep_10.mp3" compile="0" resource="1" file="tracks/bleep_10.mp3"/>
+      <FILE id="FEKFRi" name="c_major_theme.mp3" compile="0" resource="1"
+            file="tracks/c_major_theme.mp3"/>
+      <FILE id="ZEuWoQ" name="electro_smash.mp3" compile="0" resource="1"
+            file="tracks/electro_smash.mp3"/>
+      <FILE id="YyEyso" name="fast_melody_regular_drums.mp3" compile="0"
+            resource="1" file="tracks/fast_melody_regular_drums.mp3"/>
+      <FILE id="lBoqsT" name="fast_melody_thing.mp3" compile="0" resource="1"
+            file="tracks/fast_melody_thing.mp3"/>
+      <FILE id="l4bpKQ" name="hard.mp3" compile="0" resource="1" file="tracks/hard.mp3"/>
+      <FILE id="FAOl28" name="ms20_improvisation.mp3" compile="0" resource="1"
+            file="tracks/ms20_improvisation.mp3"/>
+      <FILE id="sdjuj3" name="selection1.mp3" compile="0" resource="1" file="tracks/selection1.mp3"/>
+      <FILE id="C630dX" name="soft.mp3" compile="0" resource="1" file="tracks/soft.mp3"/>
+      <FILE id="wDEgmv" name="stomper_reggae_bit.mp3" compile="0" resource="1"
+            file="tracks/stomper_reggae_bit.mp3"/>
+      <FILE id="W8cJDs" name="stomper1.mp3" compile="0" resource="1" file="tracks/stomper1.mp3"/>
+      <FILE id="UAUt0T" name="twindrive.mp3" compile="0" resource="1" file="tracks/twindrive.mp3"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
