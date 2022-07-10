@@ -47,7 +47,7 @@ MainComponent::~MainComponent()
 }
 
 //==============================================================================
-void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
     // This function will be called when the audio device is started, or when
     // its settings (i.e. sample rate, block size, etc) are changed.
@@ -62,11 +62,24 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     gain = 0.5;
 
     chosenEffect = "Plain";
-}
+
+    formatManager.registerBasicFormats();
+    juce::URL audioURL{ "file:///C:\\Users\\ventafri\\Desktop\\Uni\\OOP\\uni_year2_OOP\\programming\\DJApp\\tracks/aon_inspired.mp3"};
+
+    auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
+    if (reader != nullptr) { // good file
+        std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
+        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+        readerSource.reset(newSource.release());
+        transportSource.start();
+    };
+    transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+};
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
-{
-    if (!playing)
+{   
+    transportSource.getNextAudioBlock(bufferToFill);
+    /*if (!playing)
     {
         bufferToFill.clearActiveBufferRegion();
         return;
@@ -92,7 +105,7 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
 
         }
         
-    };
+    };*/
 
     //bufferToFill.clearActiveBufferRegion();
 }
@@ -103,6 +116,7 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
 
     // For more details, see the help for AudioProcessor::releaseResources()
+    transportSource.releaseResources();
 }
 
 //==============================================================================
@@ -162,5 +176,4 @@ void MainComponent::effectsMenuChanged() {
     case 2:      chosenEffect = "Siren";      break;
     }
     DBG("chosenEffect: " << effectsMenu.getText());
-    //chosenEffect = effectsMenu.getText();
 }
