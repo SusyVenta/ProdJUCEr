@@ -2,66 +2,50 @@
 
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
+#include "DeckGUI.h"
+#include "PlaylistComponent.h"
 
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent  : public juce::AudioAppComponent,
-                       public juce::Button::Listener,
-                       public juce::Slider::Listener
+class MainComponent : public juce::AudioAppComponent
 {
 public:
     //==============================================================================
-    MainComponent();
+    MainComponent(); // (NewProjectAudioProcessor&);
     ~MainComponent() override;
 
     //==============================================================================
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+    void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) override;
     void releaseResources() override;
 
     //==============================================================================
-    void paint (juce::Graphics& g) override;
+    void paint(juce::Graphics& g) override;
     void resized() override;
 
-    /** implement button listener */
-    void buttonClicked(juce::Button*) override;
-
-    void sliderValueChanged(juce::Slider* slider) override;
 private:
-    //==============================================================================
-    // Your private member variables go here...
-    /** sound effects - dropdown menu */
-    juce::Label effectsMenuTextLabel{ {}, "Sound effects" };
-    juce::Font textFont{ 12.0f };
-    juce::ComboBox effectsMenu;
 
-    juce::TextButton playButton{"PLAY"};
-    juce::TextButton stopButton{ "STOP" };
-    juce::TextButton loadButton{ "LOAD" };
-    juce::Slider gainSlider;
-    juce::Slider volumeSlider;
-    juce::Slider speedSlider;
-    juce::Slider positionSlider;
+    // This reference is provided as a quick way for your editor to
+    // access the processor object that created it.
+    //NewProjectAudioProcessor& audioProcessor;
 
-    juce::Random rand; // for random sampling aka white noise
 
-    /* phase var. So we could remember where we were in the synthesised waveform between calls to getNextAudioBlock. 
-    This allows us to avoid discontinuities*/
-    double phase;
-    double dphase; // change in phase
-    double gain; 
+    DJAudioPlayer player1{ formatManager };
+    DeckGUI deckGUI1{ 1, &player1 , formatManager , thumbCache };
 
-    bool playing;
-    std::string chosenEffect; 
+    DJAudioPlayer player2{ formatManager };
+    DeckGUI deckGUI2{ 2, &player2 , formatManager , thumbCache };
 
-    void effectsMenuChanged();
+    juce::MixerAudioSource mixerSource;
 
-    std::unique_ptr<juce::FileChooser> chooser;
+    juce::AudioFormatManager formatManager;
+    juce::AudioThumbnailCache thumbCache{ 100 }; // it will store up to a 100 waveforms at a time
 
-    DJAudioPlayer player1;
+    DJAudioPlayer metadataParser{ formatManager };
+    PlaylistComponent playlistComponent{ &deckGUI1, &deckGUI2, &metadataParser };
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
