@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="YfouM2" name="DJApp" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="RW5IvI" name="DJApp">
     <GROUP id="{1CE3D6A4-0EB3-1595-A471-7A6F7028859A}" name="Source">
+      <FILE id="VXoOgs" name="PlaybackBar.cpp" compile="1" resource="0" file="Source/PlaybackBar.cpp"/>
+      <FILE id="Zpxtzi" name="PlaybackBar.h" compile="0" resource="0" file="Source/PlaybackBar.h"/>
+      <FILE id="tLeJu6" name="AxisModifier.cpp" compile="1" resource="0"
+            file="Source/AxisModifier.cpp"/>
+      <FILE id="CMf8hq" name="AxisModifier.h" compile="0" resource="0" file="Source/AxisModifier.h"/>
+      <FILE id="N0bZvi" name="WaveformDisplay.cpp" compile="1" resource="0"
+            file="Source/WaveformDisplay.cpp"/>
+      <FILE id="CA5BCH" name="WaveformDisplay.h" compile="0" resource="0"
+            file="Source/WaveformDisplay.h"/>
+      <FILE id="RdxiCd" name="Song.cpp" compile="1" resource="0" file="Source/Song.cpp"/>
+      <FILE id="Ftr651" name="Song.h" compile="0" resource="0" file="Source/Song.h"/>
+      <FILE id="O96saH" name="PlaylistComponent.cpp" compile="1" resource="0"
+            file="Source/PlaylistComponent.cpp"/>
+      <FILE id="IBmDuB" name="PlaylistComponent.h" compile="0" resource="0"
+            file="Source/PlaylistComponent.h"/>
       <FILE id="aAfesV" name="DeckGUI.cpp" compile="1" resource="0" file="Source/DeckGUI.cpp"/>
       <FILE id="fsTmiV" name="DeckGUI.h" compile="0" resource="0" file="Source/DeckGUI.h"/>
       <FILE id="frNHD7" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>

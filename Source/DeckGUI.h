@@ -13,7 +13,7 @@
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
 #include "WaveformDisplay.h"
-#include "AxisModificator.h"
+#include "AxisModifier.h"
 #include "PlaybackBar.h"
 
 
@@ -25,7 +25,7 @@ class DeckGUI : public juce::Component,
     public juce::Slider::Listener,
     public juce::FileDragAndDropTarget,
     public juce::Timer,
-    public AxisModificator::EventListener
+    public AxisModifier::EventListener
 {
 public:
     DeckGUI(int _id,
@@ -42,7 +42,7 @@ public:
     bool isInterestedInFileDrag(const juce::StringArray& files) override;
     void filesDropped(const juce::StringArray& files, int x, int y) override;
     void timerCallback() override;
-    void axisModificatorValueChange(AxisModificator* axisModificator) override;
+    void AxisModifierValueChange(AxisModifier* AxisModifier) override;
 
 private:
 
@@ -53,22 +53,11 @@ private:
     juce::LookAndFeel_V4 sliderLookAndFeel; //slider styles
     PlaybackBar playbackBarLAF; //play progress bar look and feel
 
-    juce::DrawableButton* forwardButton;
-    std::unique_ptr<juce::Drawable> forwardButtonImage;
-    std::unique_ptr<juce::Drawable> forwardButtonImageDown;
+    juce::TextButton forwardButton{ "forward 0xE2 0x96 0xB6" };
 
+    juce::TextButton reverseButton{ "reverse 0xE2 0x96 0xB6" };
 
-    juce::DrawableButton* reverseButton;
-    std::unique_ptr<juce::Drawable> reverseButtonImage;
-    std::unique_ptr<juce::Drawable> reverseButtonImageDown;
-
-    juce::DrawableButton* playButton;
-
-    std::unique_ptr<juce::Drawable> playButtonImage;
-    std::unique_ptr<juce::Drawable> playButtonImageDown;
-    std::unique_ptr<juce::Drawable> pauseButtonImage;
-    std::unique_ptr<juce::Drawable> pauseButtonImageDown;
-
+    juce::TextButton playButton{ "PLAY 0xE2 0x96 0xB6" };
 
     juce::Label volLabel;
     juce::Label speedLabel;
@@ -78,8 +67,8 @@ private:
     juce::Slider posSlider;
 
     juce::Slider axisSlider;
-    AxisModificator axisModificator1;
-    AxisModificator axisModificator2;
+    AxisModifier AxisModifier1;
+    AxisModifier AxisModifier2;
 
     juce::SharedResourcePointer<juce::TooltipWindow> sharedTooltip;
 
