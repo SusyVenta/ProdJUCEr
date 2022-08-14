@@ -20,7 +20,7 @@
 /// <param name="cacheToUse">The current cache loaded from the audio file.</param>
 WaveformDisplay::WaveformDisplay(juce::AudioFormatManager& formatManagerToUse,
     juce::AudioThumbnailCache& cacheToUse) :  //: to initialise variables 
-    audioThumb(1000, formatManagerToUse, cacheToUse),
+    audioThumb(1000, formatManagerToUse, cacheToUse), //1000 points to build waveplot aka downsampling
     fileLoaded(false),
     position(0)
 {
@@ -39,9 +39,9 @@ void WaveformDisplay::paint(juce::Graphics& g)
 {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));   // clear the background
 
-    g.setColour(juce::Colours::darkcyan); //colour of the wave
+    g.setColour(juce::Colours::coral); //colour of the wave
     g.drawRect(getLocalBounds(), 1);   // draw an outline around the component
-    g.setColour(juce::Colours::darkcyan); // colour of box outline
+    g.setColour(juce::Colours::coral); // colour of box outline
 
     if (fileLoaded) {
         audioThumb.drawChannel(g,   //graphics
@@ -51,7 +51,7 @@ void WaveformDisplay::paint(juce::Graphics& g)
             0,  // channel
             1.0f);  //vertical zoom factor 
 
-        g.setColour(juce::Colours::cyan);
+        g.setColour(juce::Colours::coral);
         if (position > 0 && getWidth() > 0) {
             g.drawRect(position * getWidth(), 0, getWidth() / 20, getHeight());
             //check for this to avoid errors
@@ -72,7 +72,7 @@ void WaveformDisplay::paint(juce::Graphics& g)
     }
     else {
         g.setFont(20.0f);
-        g.drawText("Song not added yet...", getLocalBounds(),
+        g.drawText("Add a track!", getLocalBounds(),
             juce::Justification::centred, true);   // draw some placeholder text
     }
 }
@@ -94,6 +94,7 @@ void WaveformDisplay::loadURL(juce::URL audioURL)
 
     if (fileLoaded) {
         DBG("File was loaded successfully");
+        // paint waveform 
         repaint();
     }
     else {

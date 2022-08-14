@@ -147,28 +147,15 @@ double DJAudioPlayer::getLengthInSeconds()
 }
 
 
-void DJAudioPlayer::setRoomSize(float size)
-{
-    DBG("DJAudioPlayer::setRoomSize called");
-    if (size < 0 || size > 1.0)
-    {
-        DBG("DJAudioPlayer::setRoomSize size should be between 0 and 1.0");
-    }
-    else {
-        reverbParameters.roomSize = size;
-        reverbSource.setParameters(reverbParameters);
-    }
-}
-
-void DJAudioPlayer::setDamping(float dampingAmt)
+void DJAudioPlayer::setFreeze(float freezeAmt)
 {
     DBG("DJAudioPlayer::setDamping called");
-    if (dampingAmt < 0 || dampingAmt > 1.0)
+    if (freezeAmt < 0 || freezeAmt > 1.0)
     {
         DBG("DJAudioPlayer::setDamping amount should be between 0 and 1.0");
     }
     else {
-        reverbParameters.damping = dampingAmt;
+        reverbParameters.freezeMode = freezeAmt;
         reverbSource.setParameters(reverbParameters);
     }
 }
@@ -182,19 +169,6 @@ void DJAudioPlayer::setWetLevel(float wetLevel)
     }
     else {
         reverbParameters.wetLevel = wetLevel;
-        reverbSource.setParameters(reverbParameters);
-    }
-}
-
-void DJAudioPlayer::setDryLevel(float dryLevel)
-{
-    DBG("DJAudioPlayer::setDryLevel called");
-    if (dryLevel < 0 || dryLevel > 1.0)
-    {
-        DBG("DJAudioPlayer::setDryLevel level should be between 0 and 1.0");
-    }
-    else {
-        reverbParameters.dryLevel = dryLevel;
         reverbSource.setParameters(reverbParameters);
     }
 }

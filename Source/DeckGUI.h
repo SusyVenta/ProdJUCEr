@@ -13,8 +13,7 @@
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
 #include "WaveformDisplay.h"
-#include "AxisModifier.h"
-#include "PlaybackBar.h"
+#include "KnobsLookAndFeel.h"
 
 
 //==============================================================================
@@ -24,8 +23,7 @@ class DeckGUI : public juce::Component,
     public juce::Button::Listener,
     public juce::Slider::Listener,
     public juce::FileDragAndDropTarget,
-    public juce::Timer,
-    public AxisModifier::EventListener
+    public juce::Timer
 {
 public:
     DeckGUI(int _id,
@@ -42,7 +40,6 @@ public:
     bool isInterestedInFileDrag(const juce::StringArray& files) override;
     void filesDropped(const juce::StringArray& files, int x, int y) override;
     void timerCallback() override;
-    void AxisModifierValueChange(AxisModifier* AxisModifier) override;
 
 private:
 
@@ -51,24 +48,15 @@ private:
     bool isOn = false;
 
     juce::LookAndFeel_V4 sliderLookAndFeel; //slider styles
-    PlaybackBar playbackBarLAF; //play progress bar look and feel
-
-    juce::TextButton forwardButton{ "forward 0xE2 0x96 0xB6" };
-
-    juce::TextButton reverseButton{ "reverse 0xE2 0x96 0xB6" };
-
-    juce::TextButton playButton{ "PLAY 0xE2 0x96 0xB6" };
-
-    juce::Label volLabel;
-    juce::Label speedLabel;
-    juce::Label posLabel;
-    juce::Slider volSlider;
+    
     juce::Slider speedSlider;
     juce::Slider posSlider;
 
-    juce::Slider axisSlider;
-    AxisModifier AxisModifier1;
-    AxisModifier AxisModifier2;
+    // custom knowbs style
+    KnobsLookAndFeel knobsLookAndFeel;
+    juce::Slider wetSlider;
+    juce::Slider freezeSlider;
+    juce::Slider volSlider;
 
     juce::SharedResourcePointer<juce::TooltipWindow> sharedTooltip;
 
@@ -77,6 +65,25 @@ private:
 
     void loadFile(juce::URL audioURL);
     friend class PlaylistComponent; //allow access from PlaylistComponent to private members of this class DeckGUI
+
+    // play button
+    juce::ImageButton playButton;
+    juce::File playButtonFile = juce::File::getSpecialLocation
+    (juce::File::SpecialLocationType::userDesktopDirectory).getChildFile("playpause.png");
+    juce::Image playPauseImage = juce::ImageCache::getFromFile(playButtonFile);
+
+    // fast forward button
+    juce::ImageButton forwardButton;
+    juce::File forwardButtonFile = juce::File::getSpecialLocation
+    (juce::File::SpecialLocationType::userDesktopDirectory).getChildFile("forward-button.png");
+    juce::Image forwardButtonImage = juce::ImageCache::getFromFile(forwardButtonFile);
+
+    // fast rewind button
+    juce::ImageButton rewindButton;
+    juce::File rewindButtonFile = juce::File::getSpecialLocation
+    (juce::File::SpecialLocationType::userDesktopDirectory).getChildFile("rewind.png");
+    juce::Image rewindButtonImage = juce::ImageCache::getFromFile(rewindButtonFile);
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeckGUI);
 };

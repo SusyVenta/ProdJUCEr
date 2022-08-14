@@ -42,7 +42,7 @@ private:
     juce::MixerAudioSource mixerSource;
 
     juce::AudioFormatManager formatManager;
-    juce::AudioThumbnailCache thumbCache{ 100 }; // it will store up to a 100 waveforms at a time
+    juce::AudioThumbnailCache thumbCache{ 100 }; // stores max 100 cached waveforms at a time
 
     DJAudioPlayer metadataParser{ formatManager };
     PlaylistComponent playlistComponent{ &deckGUI1, &deckGUI2, &metadataParser };

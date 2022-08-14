@@ -24,63 +24,93 @@ waveformDisplay(formatManagerToUse, cacheToUse)
 {
     // In your constructor, you should add any child components, and
     addAndMakeVisible(waveformDisplay);
-    addAndMakeVisible(AxisModifier1);
-    addAndMakeVisible(AxisModifier2);
-    addAndMakeVisible(volLabel);
-    addAndMakeVisible(speedLabel);
+    addAndMakeVisible(wetSlider);
+    addAndMakeVisible(freezeSlider);
     addAndMakeVisible(volSlider);
-    addAndMakeVisible(posLabel);
     addAndMakeVisible(speedSlider);
     addAndMakeVisible(posSlider);
     addAndMakeVisible(playButton);
     addAndMakeVisible(forwardButton);
-    addAndMakeVisible(reverseButton);
+    addAndMakeVisible(rewindButton);
 
     playButton.addListener(this);
     forwardButton.addListener(this);
-    reverseButton.addListener(this);
+    rewindButton.addListener(this);
     volSlider.addListener(this);
     speedSlider.addListener(this);
     posSlider.addListener(this);
-    axisSlider.addListener(this);
-    AxisModifier1.addEventListener(this);
-    AxisModifier2.addEventListener(this);
+    wetSlider.addListener(this);
+    freezeSlider.addListener(this);
 
-    // set range, default values, labels and decimal point precision for sliders
+    // track position slider
+    posSlider.setRange(0.0, 1.0);
+    posSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 200, 20);
+    posSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    posSlider.setTooltip("Drag slider to control track position");
+
+    // vol slider
+    volSlider.setLookAndFeel(&knobsLookAndFeel);
+    volSlider.setSliderStyle(juce::Slider::Rotary);
+    volSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+    volSlider.setTooltip("Turn knowb to control volume");
+    volSlider.setTextValueSuffix(" Vol.");
+
     double vol = 0.5;
     volSlider.setValue(vol);
     volSlider.setRange(0.0, 1.0);
     volSlider.setNumDecimalPlacesToDisplay(2);
-    volSlider.setTextValueSuffix(" Vol.");
-    volLabel.attachToComponent(&volSlider, true);
-    volSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
-    //make volume slider rotary
-    volSlider.setSliderStyle(juce::Slider::SliderStyle::Rotary);
-    volSlider.setTooltip("Drag slider to control volume");
+
+    // speed slider
+    speedSlider.setLookAndFeel(&knobsLookAndFeel);
+    speedSlider.setSliderStyle(juce::Slider::Rotary);
+    speedSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+    speedSlider.setTooltip("Turn knowb to control speed");
+    speedSlider.setTextValueSuffix(" Speed");
 
     double speed = 1.0;
     speedSlider.setValue(speed);
-    speedSlider.setRange(0.0, 3.0);
+    speedSlider.setRange(0.2, 2.0);
     speedSlider.setNumDecimalPlacesToDisplay(2);
-    speedSlider.setTextValueSuffix(" Rate");
-    speedLabel.attachToComponent(&speedSlider, true);
-    speedSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
-    //make speed slider vertical
-    speedSlider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
-    speedSlider.setTooltip("Drag slider to control the playrate speed of the song");
 
-    posSlider.setRange(0.0, 1.0);
-    posSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
-    posSlider.setSliderStyle(juce::Slider::LinearBar);
-    posLabel.setText("Playback Control", juce::dontSendNotification);
-    posSlider.setTooltip("Drag slider to control where the song should play from");
+    // wet slider
+    wetSlider.setLookAndFeel(&knobsLookAndFeel);
+    wetSlider.setSliderStyle(juce::Slider::Rotary);
+    wetSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+    wetSlider.setTooltip("Turn knowb to control wet level");
+    wetSlider.setTextValueSuffix(" Wet");
 
+    double wet = 0.5;
+    wetSlider.setValue(wet);
+    wetSlider.setRange(0.0, 1.0);
+    wetSlider.setNumDecimalPlacesToDisplay(2);
 
-    //configure the slider for AxisModifier
-    axisSlider.setRange(0.0, 1.0);
-    axisSlider.setNumDecimalPlacesToDisplay(2);
-    AxisModifier1.setTooltip("x: damping\ny: room size");
-    AxisModifier2.setTooltip("x: dry level\ny: wet level");
+    // freeze slider
+    freezeSlider.setLookAndFeel(&knobsLookAndFeel);
+    freezeSlider.setSliderStyle(juce::Slider::Rotary);
+    freezeSlider.setTextBoxStyle(juce::Slider::TextBoxAbove, true, 80, 20);
+    freezeSlider.setTooltip("Turn knowb to control freeze level");
+    freezeSlider.setTextValueSuffix(" Freeze");
+
+    double freeze = 0.0;
+    freezeSlider.setValue(freeze);
+    freezeSlider.setRange(0.0, 1.0);
+    freezeSlider.setNumDecimalPlacesToDisplay(2);
+
+    // track controls - button images
+    playButton.setImages(true, true, true,
+        playPauseImage, 1.0f, juce::Colours::coral,
+        playPauseImage, 1.0f, juce::Colour(0x33000000),
+        playPauseImage, 1.0f, juce::Colour(0x55000000));
+
+    forwardButton.setImages(true, true, true,
+        forwardButtonImage, 1.0f, juce::Colours::coral,
+        forwardButtonImage, 1.0f, juce::Colour(0x33000000),
+        forwardButtonImage, 1.0f, juce::Colour(0x55000000));
+
+    rewindButton.setImages(true, true, true,
+        rewindButtonImage, 1.0f, juce::Colours::coral,
+        rewindButtonImage, 1.0f, juce::Colour(0x33000000),
+        rewindButtonImage, 1.0f, juce::Colour(0x55000000));
 
     //parameter is how often to call the timer function in miliseconds
     startTimer(300);
@@ -93,35 +123,30 @@ DeckGUI::~DeckGUI()
 
 void DeckGUI::paint(juce::Graphics& g)
 {
-    sliderLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::cyan);
+    sliderLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::coral);
 
-    volSlider.setLookAndFeel(&sliderLookAndFeel);
-    posSlider.setLookAndFeel(&playbackBarLAF);
-    speedSlider.setLookAndFeel(&sliderLookAndFeel);
+    posSlider.setLookAndFeel(&sliderLookAndFeel);
 
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));   // clear the background
-    g.setColour(juce::Colours::darkcyan);
+    g.setColour(juce::Colours::coral);
     g.setFont(14.0f);
 }
 
 void DeckGUI::resized()
 {
     double rowH = getHeight() / 20;
-    posLabel.setBounds(0, 0, getWidth(), rowH);
-    posSlider.setBounds(0, rowH, getWidth(), rowH);
-    waveformDisplay.setBounds(0, 2 * rowH, getWidth(), 4 * rowH);
+    waveformDisplay.setBounds(0, 0, getWidth(), 4 * rowH);
+    posSlider.setBounds(0, 4 * rowH, getWidth(), rowH);
+    
+    wetSlider.setBounds(0, 6 * rowH, getWidth() / 2,4 * rowH);
+    freezeSlider.setBounds(getWidth() / 2, 6 * rowH, getWidth() / 2, 4 * rowH);
+    volSlider.setBounds(0, 11 * rowH, getWidth() / 2, 4 * rowH);
+    speedSlider.setBounds(getWidth() / 2, 11 * rowH, getWidth() / 2, 4 * rowH);
 
-    AxisModifier1.setBounds(0, 6 * rowH, getWidth() / 2, 5 * rowH);
-    AxisModifier2.setBounds(getWidth() / 2, 6 * rowH, getWidth() / 2, 5 * rowH);
-    volSlider.setBounds(0, 11 * rowH, 2 * getWidth() / 3, 5 * rowH);
-    speedSlider.setBounds(2 * getWidth() / 3, 11 * rowH, getWidth() / 3, 5 * rowH);
-
-    reverseButton.setBounds(0, 16 * rowH, getWidth() / 4, 4 * rowH);
-    playButton.setBounds(getWidth() / 4, 16 * rowH, 2 * getWidth() / 4, 4 * rowH);
-
-    forwardButton.setBounds(3 * getWidth() / 4, 16 * rowH, getWidth() / 4, 4 * rowH);
+    rewindButton.setBounds(0, 16.5 * rowH, getWidth() / 4, 3 * rowH);
+    playButton.setBounds(getWidth() / 4, 16.5 * rowH, 2 * getWidth() / 4, 3 * rowH);
+    forwardButton.setBounds(3 * getWidth() / 4, 16.5 * rowH, getWidth() / 4, 3 * rowH);
 }
-
 
 
 /// <summary>
@@ -132,6 +157,7 @@ void DeckGUI::buttonClicked(juce::Button* button)
 {
     if (button == &playButton)
     {
+        
         isOn = !isOn;
         if (isOn)
         {
@@ -147,22 +173,18 @@ void DeckGUI::buttonClicked(juce::Button* button)
 
     else if (button == &forwardButton)
     {
-        std::cout << "Forward button was clicked " << std::endl;
         if (player->getPositionRelative() < 0.95)
         {
             player->setPositionRelative(player->getPositionRelative() + 0.05);
         }
-        DBG("player->getPositionRelative() is " << player->getPositionRelative());
     }
-    else if (button == &reverseButton)
+    else if (button == &rewindButton)
     {
-        std::cout << "Reverse button was clicked " << std::endl;
         //Only allow if song has been playing long ehough
         if (player->getPositionRelative() > 0.05)
         {
             player->setPositionRelative(player->getPositionRelative() - 0.05);
         }
-        DBG("player->getPositionRelative() is " << player->getPositionRelative());
     }
 }
 
@@ -181,17 +203,23 @@ void DeckGUI::sliderValueChanged(juce::Slider* slider)
     {
         player->setPositionRelative(slider->getValue());
     }
+    if (slider == &wetSlider)
+    {
+        player->setWetLevel(slider->getValue());
+    }
+    if (slider == &freezeSlider)
+    {
+        player->setFreeze(slider->getValue());
+    }
 }
 
 bool DeckGUI::isInterestedInFileDrag(const juce::StringArray& files)
 {
-    std::cout << "DeckGUI::isInterestedInFileDrag" << std::endl;
     return true;
 }
 
 void DeckGUI::filesDropped(const juce::StringArray& files, int x, int y)
 {
-    std::cout << "DeckGUI::filesDropped" << std::endl;
     if (files.size() == 1)
     {
         player->loadURL(juce::URL{ juce::File{ files[0] } });
@@ -206,28 +234,7 @@ void DeckGUI::timerCallback()
 
 void DeckGUI::loadFile(juce::URL audioURL)
 {
-    DBG("DeckGUI::loadFile called");
     player->loadURL(audioURL);
     waveformDisplay.loadURL(audioURL);
 
-}
-
-/// <summary>
-/// If the AxisModifier box is interacted with, check which box it is, then pass new x,y coordinates to the player.
-/// </summary>
-/// <param name="AxisModifier"></param>
-void DeckGUI::AxisModifierValueChange(AxisModifier* AxisModifier)
-{
-    if (AxisModifier == &AxisModifier1)
-    {
-        DBG("Deck " << id << ": AxisModifier1 was clicked");
-        player->setRoomSize(AxisModifier->getY());
-        player->setDamping(AxisModifier->getX());
-    }
-    if (AxisModifier == &AxisModifier2)
-    {
-        DBG("Deck " << id << ": AxisModifier2 was clicked");
-        player->setWetLevel(AxisModifier->getY());
-        player->setDryLevel(AxisModifier->getX());
-    }
 }

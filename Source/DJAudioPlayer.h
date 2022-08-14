@@ -29,19 +29,15 @@ public:
     void start();
     void stop();
 
-    /** Get the relative positions of the playhead*/
+    /** Get the relative position of the playhead*/
     double getPositionRelative();
 
     double getLengthInSeconds();
 
-    /**Sets the amount of reverb*/
-    void setRoomSize(float size);
-    /**Sets the amount of reverb*/
-    void setDamping(float dampingAmt);
+    /**Sets the amount of reverb freeze*/
+    void setFreeze(float freezeAmt);
     /**Sets the amount of reverb*/
     void setWetLevel(float wetLevel);
-    /**Sets the amount of reverb*/
-    void setDryLevel(float dryLevel);
 
 private:
     juce::AudioFormatManager& formatManager;

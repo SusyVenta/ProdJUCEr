@@ -51,7 +51,7 @@ public:
         int width,
         int height,
         bool rowIsSelected) override;
-
+    // ------------------------------------------------------
     juce::Component* refreshComponentForCell(int rowNumber,
         int columnId,
         bool isRowSelected,
@@ -61,6 +61,8 @@ public:
     void buttonClicked(juce::Button* button) override;
 
 private:
+    juce::TableListBox tableComponent;
+
     //list of songs
     std::vector<Song> songs;
 

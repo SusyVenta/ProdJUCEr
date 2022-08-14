@@ -30,16 +30,19 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
     // an instance of the DJAudioPlayer to process metadata
     metadataParser(_metadataParser)
 {
+    
+    addAndMakeVisible(tableComponent);
+    tableComponent.getHeader().addColumn("Track title", 1, 400);
     // search configuration
     addAndMakeVisible(searchBox);
-    searchBox.setTextToShowWhenEmpty("Search for song name and Press Enter.", juce::Colours::cyan);
+    searchBox.setTextToShowWhenEmpty("Search for song name and press Enter.", juce::Colours::lightcoral);
     searchBox.onReturnKey = [this] { searchPlaylist(searchBox.getText()); };
 
     //configure list of songs
     addAndMakeVisible(playlist);
     // setup table and load playlist from file
-    playlist.getHeader().addColumn("Songs", 1, 1);
-    playlist.getHeader().addColumn("Playtime", 2, 1);
+    playlist.getHeader().addColumn("Song", 1, 1);
+    playlist.getHeader().addColumn("Duration", 2, 1);
     //add column to hold the close button
     playlist.getHeader().addColumn("", 3, 1);
     playlist.setModel(this);
@@ -51,8 +54,8 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
 
     addAndMakeVisible(decksLabel);
     decksLabel.setFont(juce::Font(16.0f, juce::Font::bold));
-    decksLabel.setText("Add song to left or right deck", juce::dontSendNotification);
-    decksLabel.setColour(juce::Label::textColourId, juce::Colours::lightcyan);
+    decksLabel.setText("Add song to left or right deck:", juce::dontSendNotification);
+    decksLabel.setColour(juce::Label::textColourId, juce::Colours::lightcoral);
     decksLabel.setJustificationType(juce::Justification::centred);
 
     addAndMakeVisible(addToPlayer1Button);
@@ -74,8 +77,8 @@ PlaylistComponent::~PlaylistComponent()
 void PlaylistComponent::paint(juce::Graphics& g)
 {
     importButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
-    addToPlayer1Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::darkcyan);
-    addToPlayer2Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::darkcyan);
+    addToPlayer1Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
+    addToPlayer2Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
 }
 
 /// <summary>
@@ -84,6 +87,9 @@ void PlaylistComponent::paint(juce::Graphics& g)
 void PlaylistComponent::resized()
 {
     double rowH = getHeight() / 20;
+
+    tableComponent.setBounds(0, 0, getWidth(), getHeight());
+
     searchBox.setBounds(0, 0, getWidth(), 2 * rowH);
 
     playlist.setBounds(0, 2 * rowH, getWidth(), 13 * rowH);
@@ -118,10 +124,10 @@ void PlaylistComponent::paintRowBackground(juce::Graphics& g,
     if (rowIsSelected)
     {
         g.setColour(juce::Colours::white);
-        g.fillAll(juce::Colours::darkcyan);
+        g.fillAll(juce::Colours::coral);
     }
     else {
-        g.fillAll(juce::Colours::lightcyan);
+        g.fillAll(juce::Colours::coral);
     }
 }
 
@@ -174,6 +180,7 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
     {
         if (existingComponentToUpdate == nullptr)
         {
+            /* Adds a button next to each track to remove the track from the playlist.  */
             juce::TextButton* btn = new juce::TextButton{ "X" };
             juce::String id{ std::to_string(rowNumber) };
             btn->setComponentID(id);

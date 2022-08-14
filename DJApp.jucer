@@ -5,11 +5,10 @@
               defines="JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="RW5IvI" name="DJApp">
     <GROUP id="{1CE3D6A4-0EB3-1595-A471-7A6F7028859A}" name="Source">
-      <FILE id="VXoOgs" name="PlaybackBar.cpp" compile="1" resource="0" file="Source/PlaybackBar.cpp"/>
-      <FILE id="Zpxtzi" name="PlaybackBar.h" compile="0" resource="0" file="Source/PlaybackBar.h"/>
-      <FILE id="tLeJu6" name="AxisModifier.cpp" compile="1" resource="0"
-            file="Source/AxisModifier.cpp"/>
-      <FILE id="CMf8hq" name="AxisModifier.h" compile="0" resource="0" file="Source/AxisModifier.h"/>
+      <FILE id="ueosBI" name="KnobsLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/KnobsLookAndFeel.cpp"/>
+      <FILE id="e2kPYX" name="KnobsLookAndFeel.h" compile="0" resource="0"
+            file="Source/KnobsLookAndFeel.h"/>
       <FILE id="N0bZvi" name="WaveformDisplay.cpp" compile="1" resource="0"
             file="Source/WaveformDisplay.cpp"/>
       <FILE id="CA5BCH" name="WaveformDisplay.h" compile="0" resource="0"
