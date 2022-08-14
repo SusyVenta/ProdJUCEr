@@ -58,10 +58,10 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
     decksLabel.setColour(juce::Label::textColourId, juce::Colours::lightcoral);
     decksLabel.setJustificationType(juce::Justification::centred);
 
-    addAndMakeVisible(addToPlayer1Button);
-    addAndMakeVisible(addToPlayer2Button);
-    addToPlayer1Button.addListener(this);
-    addToPlayer2Button.addListener(this);
+    addAndMakeVisible(addSongToLeftDeckButton);
+    addAndMakeVisible(addSongToRightDeckButton);
+    addSongToLeftDeckButton.addListener(this);
+    addSongToRightDeckButton.addListener(this);
 }
 
 PlaylistComponent::~PlaylistComponent()
@@ -77,8 +77,8 @@ PlaylistComponent::~PlaylistComponent()
 void PlaylistComponent::paint(juce::Graphics& g)
 {
     importSongsButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
-    addToPlayer1Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
-    addToPlayer2Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
+    addSongToLeftDeckButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
+    addSongToRightDeckButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
 }
 
 /// <summary>
@@ -99,8 +99,8 @@ void PlaylistComponent::resized()
 
     importSongsButton.setBounds(0, 15 * rowH, getWidth(), 2 * rowH);
     decksLabel.setBounds(0, 17 * rowH, getWidth(), rowH);
-    addToPlayer1Button.setBounds(0, 18 * rowH, getWidth() / 2, 2 * rowH);
-    addToPlayer2Button.setBounds(getWidth() / 2, 18 * rowH, getWidth() / 2, 2 * rowH);
+    addSongToLeftDeckButton.setBounds(0, 18 * rowH, getWidth() / 2, 2 * rowH);
+    addSongToRightDeckButton.setBounds(getWidth() / 2, 18 * rowH, getWidth() / 2, 2 * rowH);
 }
 
 /// <summary>
@@ -196,16 +196,16 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
 {
     if (button == &importSongsButton)
     {
-        importToPlaylist();
+        importSongToPlaylist();
         playlist.updateContent();
     }
-    else if (button == &addToPlayer1Button)
+    else if (button == &addSongToLeftDeckButton)
     {
-        loadInPlayer(deckGUI1);
+        loadSongInDeck(deckGUI1);
     }
-    else if (button == &addToPlayer2Button)
+    else if (button == &addSongToRightDeckButton)
     {
-        loadInPlayer(deckGUI2);
+        loadSongInDeck(deckGUI2);
     }
     else
     {
@@ -218,10 +218,8 @@ void PlaylistComponent::buttonClicked(juce::Button* button)
 
 void PlaylistComponent::savePlaylist()
 {
-    // create .csv to save playlist
     std::ofstream myPlaylist("playlist.csv");
 
-    // save playlist to file
     for (Song& t : songs)
     {
         myPlaylist << t.file.getFullPathName() << "," << t.trackDuration << "\n";
@@ -256,7 +254,7 @@ void PlaylistComponent::loadPlaylist()
 /// Pass the selected song from the songs vector to a DeckGUI object so it can load it to be played.
 /// </summary>
 /// <param name="DeckGUI* deckGUI"></param>
-void PlaylistComponent::loadInPlayer(DeckGUI* deckGUI)
+void PlaylistComponent::loadSongInDeck(DeckGUI* deckGUI)
 {
     int selectedRow{ playlist.getSelectedRow() };
     if (selectedRow != -1)
@@ -278,7 +276,7 @@ void PlaylistComponent::loadInPlayer(DeckGUI* deckGUI)
 /// <summary>
 /// Gives access to user to browse for a file from their PC and load that in as a Song object and add to the songs vector (the playlist).
 /// </summary>
-void PlaylistComponent::importToPlaylist()
+void PlaylistComponent::importSongToPlaylist()
 {
     DBG("PlaylistComponent::importToPlaylist called");
 

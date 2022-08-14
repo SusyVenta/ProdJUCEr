@@ -81,8 +81,8 @@ private:
     juce::TextEditor searchBox;
     juce::TableListBox playlist;
     juce::Label decksLabel;
-    juce::TextButton addToPlayer1Button{ "ADD TO LEFT" };
-    juce::TextButton addToPlayer2Button{ "ADD TO RIGHT" };
+    juce::TextButton addSongToLeftDeckButton{ "ADD TO LEFT" };
+    juce::TextButton addSongToRightDeckButton{ "ADD TO RIGHT" };
 
     //playlist functionality
     juce::String getLength(juce::URL audioURL);
@@ -96,8 +96,8 @@ private:
     void savePlaylist();
     void loadPlaylist();
     void deleteFromPlaylist(int id);
-    void importToPlaylist();
-    void loadInPlayer(DeckGUI* deckGUI);
+    void importSongToPlaylist();
+    void loadSongInDeck(DeckGUI* deckGUI);
 
     //search functionality
     void searchPlaylist(juce::String query);
