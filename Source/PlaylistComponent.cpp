@@ -13,51 +13,44 @@
 #include <JuceHeader.h>
 #include "PlaylistComponent.h"
 
-//==============================================================================]
 
-/// <summary>
-/// Constructor function for PlaylistComponent.
-/// </summary>
-/// <param name="_deckGUI1">DeckGUI object.</param>
-/// <param name="_deckGUI2">Another DeckGUI object.</param>
-/// <param name="_metadataParser">A DJAudioPlayer object to use to parse metadata of files.</param>
 PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
-    DeckGUI* _deckGUI2,
-    DJAudioPlayer* _metadataParser)
-    // the 2 decks and the DJAudioPlayer
-    : deckGUI1(_deckGUI1),
-    deckGUI2(_deckGUI2),
-    // an instance of the DJAudioPlayer to process metadata
-    metadataParser(_metadataParser)
+                                     DeckGUI* _deckGUI2,
+                                     DJAudioPlayer* _metadataParser) : deckGUI1(_deckGUI1),
+                                                                       deckGUI2(_deckGUI2),
+                                                                       metadataParser(_metadataParser)
 {
-    
+    // track title
     addAndMakeVisible(tableComponent);
     tableComponent.getHeader().addColumn("Track title", 1, 400);
-    // search configuration
+    
+    // search songs
     addAndMakeVisible(searchBox);
     searchBox.setTextToShowWhenEmpty("Search for song name and press Enter.", juce::Colours::lightcoral);
     searchBox.onReturnKey = [this] { searchPlaylist(searchBox.getText()); };
 
-    //configure list of songs
+    // list of songs
     addAndMakeVisible(playlist);
-    // setup table and load playlist from file
     playlist.getHeader().addColumn("Song", 1, 1);
     playlist.getHeader().addColumn("Duration", 2, 1);
-    //add column to hold the close button
     playlist.getHeader().addColumn("", 3, 1);
     playlist.setModel(this);
-    //load playlist (might have saved songs from before)
+
+    // load playlist, if any songs were alredy added to it
     loadPlaylist();
 
+    // import songs button
     addAndMakeVisible(importSongsButton);
     importSongsButton.addListener(this);
 
+    // description 
     addAndMakeVisible(decksLabel);
     decksLabel.setFont(juce::Font(16.0f, juce::Font::bold));
     decksLabel.setText("Add song to left or right deck:", juce::dontSendNotification);
     decksLabel.setColour(juce::Label::textColourId, juce::Colours::lightcoral);
     decksLabel.setJustificationType(juce::Justification::centred);
 
+    // add songs to left and right buttons
     addAndMakeVisible(addSongToLeftDeckButton);
     addAndMakeVisible(addSongToRightDeckButton);
     addSongToLeftDeckButton.addListener(this);
@@ -66,14 +59,9 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
 
 PlaylistComponent::~PlaylistComponent()
 {
-    // save added songs in the playlist when closing the application
     savePlaylist();
 }
 
-/// <summary>
-/// Paints colours, fonts, background. Evrything that can be done with the Graphics class.
-/// </summary>
-/// <param name="g"></param>
 void PlaylistComponent::paint(juce::Graphics& g)
 {
     importSongsButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
@@ -81,9 +69,6 @@ void PlaylistComponent::paint(juce::Graphics& g)
     addSongToRightDeckButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
 }
 
-/// <summary>
-/// Sets the bounds and sizes of each component inside PlaylistComponent.
-/// </summary>
 void PlaylistComponent::resized()
 {
     double rowH = getHeight() / 20;
@@ -103,18 +88,11 @@ void PlaylistComponent::resized()
     addSongToRightDeckButton.setBounds(getWidth() / 2, 18 * rowH, getWidth() / 2, 2 * rowH);
 }
 
-/// <summary>
-/// Returns an integer, the number of objects of type Song in the songs vector.
-/// </summary>
-/// <returns>int number of rows</returns>
 int PlaylistComponent::getNumRows()
 {
     return songs.size();
 }
 
-/// <summary>
-/// Used to set colours for the TableListBox that holds the songs info.
-/// </summary>
 void PlaylistComponent::paintRowBackground(juce::Graphics& g,
     int rowNumber,
     int width,
@@ -131,9 +109,6 @@ void PlaylistComponent::paintRowBackground(juce::Graphics& g,
     }
 }
 
-/// <summary>
-/// Fills each cell in the TableListBox with content and styles it.
-/// </summary>
 void PlaylistComponent::paintCell(juce::Graphics& g,
     int rowNumber,
     int columnId,
@@ -168,9 +143,6 @@ void PlaylistComponent::paintCell(juce::Graphics& g,
     }
 }
 
-/// <summary>
-/// Reruns everytime content is added or removed to TableListBox and refreshes the cells' content.
-/// </summary>
 juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
     int columnId,
     bool isRowSelected,
@@ -190,7 +162,6 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
     }
     return existingComponentToUpdate;
 }
-
 
 void PlaylistComponent::buttonClicked(juce::Button* button)
 {
@@ -226,9 +197,6 @@ void PlaylistComponent::savePlaylist()
     }
 }
 
-/// <summary>
-/// Checks if the .csv with a saved playlist of songs exists. If it does, read it and add those files as a Song object and add to the songs vector which is the playlist.
-/// </summary>
 void PlaylistComponent::loadPlaylist()
 {
     // create input stream from saved playlist
@@ -250,10 +218,6 @@ void PlaylistComponent::loadPlaylist()
     myPlaylist.close();
 }
 
-/// <summary>
-/// Pass the selected song from the songs vector to a DeckGUI object so it can load it to be played.
-/// </summary>
-/// <param name="DeckGUI* deckGUI"></param>
 void PlaylistComponent::loadSongInDeck(DeckGUI* deckGUI)
 {
     int selectedRow{ playlist.getSelectedRow() };
@@ -273,33 +237,28 @@ void PlaylistComponent::loadSongInDeck(DeckGUI* deckGUI)
     }
 }
 
-/// <summary>
-/// Gives access to user to browse for a file from their PC and load that in as a Song object and add to the songs vector (the playlist).
-/// </summary>
 void PlaylistComponent::importSongToPlaylist()
 {
-    DBG("PlaylistComponent::importToPlaylist called");
-
-    //initialize file chooser
     juce::FileChooser chooser{ "Select files" };
     if (chooser.browseForMultipleFilesToOpen())
     {
         for (const juce::File& file : chooser.getResults())
         {
             juce::String fileNameWithoutExtension{ file.getFileNameWithoutExtension() };
-            if (!isInPlaylist(fileNameWithoutExtension)) // if not already loaded
+            // load songs if not already loaded
+            if (!songIsInPlaylist(fileNameWithoutExtension)) 
             {
                 Song newTrack{ file };
                 juce::URL audioURL{ file };
                 newTrack.trackDuration = getLength(audioURL);
                 songs.push_back(newTrack);
-                DBG("loaded file: " << newTrack.songName);
             }
-            else // display info message
+            // If a song was already loaded, alert user and don't import
+            else 
             {
                 juce::AlertWindow::showMessageBox(juce::AlertWindow::AlertIconType::WarningIcon,
-                    "Load information:",
-                    fileNameWithoutExtension + " already loaded",
+                    "Warning:",
+                    fileNameWithoutExtension + " was already loaded. Not loading again.",
                     "OK",
                     nullptr
                 );
@@ -308,30 +267,16 @@ void PlaylistComponent::importSongToPlaylist()
     }
 }
 
-/// <summary>
-/// Checks if a user-specified string is a valid name of a song that is currently added to the songs vector. 
-/// </summary>
-/// <param name="juce::String fileNameWithoutExtension">Takes in a string from the user - song name.</param>
-/// <returns>Bool: True or False</returns>
-bool PlaylistComponent::isInPlaylist(juce::String fileNameWithoutExtension)
+bool PlaylistComponent::songIsInPlaylist(juce::String fileNameWithoutExtension)
 {
     return (std::find(songs.begin(), songs.end(), fileNameWithoutExtension) != songs.end());
 }
 
-/// <summary>
-/// Removes a Song from the songs vector by its id.
-/// </summary>
-/// <param name="id">integer id of a Song.</param>
 void PlaylistComponent::deleteFromPlaylist(int id)
 {
     songs.erase(songs.begin() + id);
 }
 
-/// <summary>
-/// Loads the audio file from URL, parses it for how many seconds it is long, converts to minutes and returns.
-/// </summary>
-/// <param name="juce::URL audioURL">Takes in a URL for an audio file.</param>
-/// <returns>Returns a string which represents the length of a song.</returns>
 juce::String PlaylistComponent::getLength(juce::URL audioURL)
 {
     metadataParser->loadURL(audioURL);
@@ -340,11 +285,6 @@ juce::String PlaylistComponent::getLength(juce::URL audioURL)
     return minutes;
 }
 
-/// <summary>
-/// Converts seconds to minutes. Length of a song.
-/// </summary>
-/// <param name="double seconds"></param>
-/// <returns></returns>
 juce::String PlaylistComponent::secondsToMinutes(double seconds)
 {
     //find seconds and minutes and make into string
@@ -360,10 +300,6 @@ juce::String PlaylistComponent::secondsToMinutes(double seconds)
     return juce::String{ min + ":" + sec };
 }
 
-/// <summary>
-/// Searches for an existing Song in the playlist to match a name input.
-/// </summary>
-/// <param name="juce::String query">Input name of song by user. String.</param>
 void PlaylistComponent::searchPlaylist(juce::String query)
 {
     DBG("Searching playlist for: " << query);
@@ -378,11 +314,6 @@ void PlaylistComponent::searchPlaylist(juce::String query)
     }
 }
 
-/// <summary>
-/// Finds the song by its name from the search and retrieves that song's ID. ID is then used for removal of song or other functions.
-/// </summary>
-/// <param name="juce::String query">String- name of song.</param>
-/// <returns>Returns an integer id.</returns>
 int PlaylistComponent::whereInPlaylist(juce::String query)
 {
     // finds index where track title contains searchText
