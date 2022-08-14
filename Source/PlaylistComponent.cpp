@@ -49,8 +49,8 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
     //load playlist (might have saved songs from before)
     loadPlaylist();
 
-    addAndMakeVisible(importButton);
-    importButton.addListener(this);
+    addAndMakeVisible(importSongsButton);
+    importSongsButton.addListener(this);
 
     addAndMakeVisible(decksLabel);
     decksLabel.setFont(juce::Font(16.0f, juce::Font::bold));
@@ -76,7 +76,7 @@ PlaylistComponent::~PlaylistComponent()
 /// <param name="g"></param>
 void PlaylistComponent::paint(juce::Graphics& g)
 {
-    importButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
+    importSongsButton.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::grey);
     addToPlayer1Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
     addToPlayer2Button.setColour(juce::TextButton::ColourIds::buttonColourId, juce::Colours::coral);
 }
@@ -97,7 +97,7 @@ void PlaylistComponent::resized()
     playlist.getHeader().setColumnWidth(2, 3 * getWidth() / 10);
     playlist.getHeader().setColumnWidth(3, 2 * getWidth() / 10);
 
-    importButton.setBounds(0, 15 * rowH, getWidth(), 2 * rowH);
+    importSongsButton.setBounds(0, 15 * rowH, getWidth(), 2 * rowH);
     decksLabel.setBounds(0, 17 * rowH, getWidth(), rowH);
     addToPlayer1Button.setBounds(0, 18 * rowH, getWidth() / 2, 2 * rowH);
     addToPlayer2Button.setBounds(getWidth() / 2, 18 * rowH, getWidth() / 2, 2 * rowH);
@@ -145,7 +145,7 @@ void PlaylistComponent::paintCell(juce::Graphics& g,
     {
         if (columnId == 1)
         {
-            g.drawText(songs[rowNumber].songname,
+            g.drawText(songs[rowNumber].songName,
                 2,
                 0,
                 width - 4,
@@ -156,7 +156,7 @@ void PlaylistComponent::paintCell(juce::Graphics& g,
         }
         if (columnId == 2)
         {
-            g.drawText(songs[rowNumber].playtime,
+            g.drawText(songs[rowNumber].trackDuration,
                 2,
                 0,
                 width - 4,
@@ -191,40 +191,31 @@ juce::Component* PlaylistComponent::refreshComponentForCell(int rowNumber,
     return existingComponentToUpdate;
 }
 
-/// <summary>
-/// Checks which Button is clicked and fires different functions.
-/// </summary>
-/// <param name="button"></param>
+
 void PlaylistComponent::buttonClicked(juce::Button* button)
 {
-    if (button == &importButton)
+    if (button == &importSongsButton)
     {
-        DBG("Load button clicked");
         importToPlaylist();
         playlist.updateContent();
     }
     else if (button == &addToPlayer1Button)
     {
-        DBG("Add to Player 1 clicked");
         loadInPlayer(deckGUI1);
     }
     else if (button == &addToPlayer2Button)
     {
-        DBG("Add to Player 2 clicked");
         loadInPlayer(deckGUI2);
     }
     else
     {
         int id = std::stoi(button->getComponentID().toStdString());
-        DBG(songs[id].songname + " removed from Playlist");
         deleteFromPlaylist(id);
         playlist.updateContent();
     }
 }
 
-/// <summary>
-/// Creates a .csv file to hold all the songs we've added to the playlist. Is ran on app closing.
-/// </summary>
+
 void PlaylistComponent::savePlaylist()
 {
     // create .csv to save playlist
@@ -233,7 +224,7 @@ void PlaylistComponent::savePlaylist()
     // save playlist to file
     for (Song& t : songs)
     {
-        myPlaylist << t.file.getFullPathName() << "," << t.playtime << "\n";
+        myPlaylist << t.file.getFullPathName() << "," << t.trackDuration << "\n";
     }
 }
 
@@ -254,7 +245,7 @@ void PlaylistComponent::loadPlaylist()
             juce::File file{ filePath };
             Song newTrack{ file };
             getline(myPlaylist, length);
-            newTrack.playtime = length;
+            newTrack.trackDuration = length;
             songs.push_back(newTrack);
         }
     }
@@ -270,7 +261,7 @@ void PlaylistComponent::loadInPlayer(DeckGUI* deckGUI)
     int selectedRow{ playlist.getSelectedRow() };
     if (selectedRow != -1)
     {
-        DBG("Adding: " << songs[selectedRow].songname << " to Player");
+        DBG("Adding: " << songs[selectedRow].songName << " to Player");
         deckGUI->loadFile(songs[selectedRow].URL);
     }
     else
@@ -302,9 +293,9 @@ void PlaylistComponent::importToPlaylist()
             {
                 Song newTrack{ file };
                 juce::URL audioURL{ file };
-                newTrack.playtime = getLength(audioURL);
+                newTrack.trackDuration = getLength(audioURL);
                 songs.push_back(newTrack);
-                DBG("loaded file: " << newTrack.songname);
+                DBG("loaded file: " << newTrack.songName);
             }
             else // display info message
             {
@@ -398,7 +389,7 @@ int PlaylistComponent::whereInPlaylist(juce::String query)
 {
     // finds index where track title contains searchText
     auto it = find_if(songs.begin(), songs.end(),
-        [&query](const Song& obj) {return obj.songname.contains(query); });
+        [&query](const Song& obj) {return obj.songName.contains(query); });
     int i = -1;
 
     if (it != songs.end())

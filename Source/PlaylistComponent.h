@@ -14,7 +14,7 @@
 #include "Song.h" // be able to instantiate a Song object and create a vector of Song objects called songs
 #include <vector>
 #include <string>
-#include <fstream> //have access to files
+#include <fstream> // have access to files
 #include "DeckGUI.h" // to add songs to Deck1 or Deck2
 #include "DJAudioPlayer.h" //have access to loadURL() func
 
@@ -58,6 +58,11 @@ public:
         Component* existingComponentToUpdate
     );
 
+    /**
+     * Checks what button is clicked and calls different functions accordingly.
+     *
+     * @param button: the button that was clicked
+     */
     void buttonClicked(juce::Button* button) override;
 
 private:
@@ -72,7 +77,7 @@ private:
     DJAudioPlayer* metadataParser;
 
     //GUI components
-    juce::TextButton importButton{ "IMPORT SONGS" };
+    juce::TextButton importSongsButton{ "IMPORT SONGS" };
     juce::TextEditor searchBox;
     juce::TableListBox playlist;
     juce::Label decksLabel;
@@ -82,6 +87,12 @@ private:
     //playlist functionality
     juce::String getLength(juce::URL audioURL);
     juce::String secondsToMinutes(double seconds);
+
+    /**
+     * When the user closes the app, it saves a .csv file containing all songs added to the playlist.
+     *
+     * @param button: the button that was clicked
+     */
     void savePlaylist();
     void loadPlaylist();
     void deleteFromPlaylist(int id);
