@@ -223,7 +223,6 @@ void PlaylistComponent::loadSongInDeck(DeckGUI* deckGUI)
     int selectedRow{ playlist.getSelectedRow() };
     if (selectedRow != -1)
     {
-        DBG("Adding: " << songs[selectedRow].songName << " to Player");
         deckGUI->loadFile(songs[selectedRow].URL);
     }
     else
@@ -287,14 +286,14 @@ juce::String PlaylistComponent::getLength(juce::URL audioURL)
 
 juce::String PlaylistComponent::secondsToMinutes(double seconds)
 {
-    //find seconds and minutes and make into string
+    // find seconds and minutes and make into string
     int secondsRounded{ int(std::round(seconds)) };
     juce::String min{ std::to_string(secondsRounded / 60) };
     juce::String sec{ std::to_string(secondsRounded % 60) };
 
     if (sec.length() < 2) // if seconds is 1 digit or less
     {
-        //add '0' to seconds until seconds is length 2
+        // add '0' to seconds until seconds is length 2
         sec = sec.paddedLeft('0', 2);
     }
     return juce::String{ min + ":" + sec };
@@ -302,7 +301,6 @@ juce::String PlaylistComponent::secondsToMinutes(double seconds)
 
 void PlaylistComponent::searchPlaylist(juce::String query)
 {
-    DBG("Searching playlist for: " << query);
     if (query != "")
     {
         int rowNumber = whereInPlaylist(query);

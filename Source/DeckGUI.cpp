@@ -11,18 +11,15 @@
 #include <JuceHeader.h>
 #include "DeckGUI.h"
 
-//==============================================================================
+
 DeckGUI::DeckGUI(int _id,
     DJAudioPlayer* _player,
     juce::AudioFormatManager& formatManagerToUse,
     juce::AudioThumbnailCache& cacheToUse
 ) : id(_id),
-player(_player),
-waveformDisplay(formatManagerToUse, cacheToUse)
-
-
+    player(_player),
+    waveformDisplay(formatManagerToUse, cacheToUse)
 {
-    // In your constructor, you should add any child components, and
     addAndMakeVisible(waveformDisplay);
     addAndMakeVisible(wetSlider);
     addAndMakeVisible(freezeSlider);
@@ -112,7 +109,7 @@ waveformDisplay(formatManagerToUse, cacheToUse)
         rewindButtonImage, 1.0f, juce::Colour(0x33000000),
         rewindButtonImage, 1.0f, juce::Colour(0x55000000));
 
-    //parameter is how often to call the timer function in miliseconds
+    // every 300 miliseconds
     startTimer(300);
 }
 
@@ -148,11 +145,6 @@ void DeckGUI::resized()
     forwardButton.setBounds(3 * getWidth() / 4, 16.5 * rowH, getWidth() / 4, 3 * rowH);
 }
 
-
-/// <summary>
-/// Checks which button is pressed and runs different functions.
-/// </summary>
-/// <param name="button">juce::Button* button</param>
 void DeckGUI::buttonClicked(juce::Button* button)
 {
     if (button == &playButton)
@@ -180,7 +172,7 @@ void DeckGUI::buttonClicked(juce::Button* button)
     }
     else if (button == &rewindButton)
     {
-        //Only allow if song has been playing long ehough
+        // Only allow if song has been playing long ehough
         if (player->getPositionRelative() > 0.05)
         {
             player->setPositionRelative(player->getPositionRelative() - 0.05);

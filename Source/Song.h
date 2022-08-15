@@ -39,5 +39,5 @@ public:
      * @param otherSongName: the file name of a song
      * @returns True or False
      */
-    bool operator==(const juce::String& other) const;
+    bool operator==(const juce::String& otherSongName) const;
 };

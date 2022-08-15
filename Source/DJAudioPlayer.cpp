@@ -13,7 +13,7 @@
 DJAudioPlayer::DJAudioPlayer(juce::AudioFormatManager& _formatManager)
     : formatManager(_formatManager)
 {
-    //Default reverb settings
+    // Set default reverb settings
     reverbParameters.roomSize = 0;
     reverbParameters.damping = 0;
     reverbParameters.wetLevel = 0;
@@ -27,7 +27,6 @@ DJAudioPlayer::~DJAudioPlayer() {
 
 void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
-    //formatManager.registerBasicFormats();
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     resampleSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
     reverbSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
@@ -35,7 +34,6 @@ void DJAudioPlayer::prepareToPlay(int samplesPerBlockExpected, double sampleRate
 
 void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    //replace resampleSource with processed sound from reverb axis blocks
     reverbSource.getNextAudioBlock(bufferToFill);
 };
 
@@ -48,10 +46,10 @@ void DJAudioPlayer::releaseResources()
 
 void DJAudioPlayer::loadURL(juce::URL audioURL)
 {
-    //takes audio url input string and passes to formatManager and creates a Reader
+    // takes audio url input string, passes it to formatManager, and creates a Reader
     auto* reader = formatManager.createReaderFor(audioURL.createInputStream(false));
-    //check if it successfully created the reader
-    if (reader != nullptr) //good file!
+    // check if it successfully created the reader aka the file is readable
+    if (reader != nullptr) 
     {
         std::unique_ptr<juce::AudioFormatReaderSource> newSource(new juce::AudioFormatReaderSource(reader, true));
         transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
