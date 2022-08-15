@@ -37,6 +37,9 @@ public:
         DJAudioPlayer* _playerForParsingMetaData
     );
 
+    /**
+     * Class destructor
+     */
     ~PlaylistComponent() override;
 
     /**

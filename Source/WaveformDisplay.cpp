@@ -11,16 +11,10 @@
 #include "WaveformDisplay.h"
 #include <JuceHeader.h>
 
-//==============================================================================
 
-/// <summary>
-/// The constructor function for the Waveform component which draws a waveform based on the audio file's properties.
-/// </summary>
-/// <param name="formatManagerToUse">An instance of the juce::AudioFormatManager to use for this.</param>
-/// <param name="cacheToUse">The current cache loaded from the audio file.</param>
 WaveformDisplay::WaveformDisplay(juce::AudioFormatManager& formatManagerToUse,
-    juce::AudioThumbnailCache& cacheToUse) :  //: to initialise variables 
-    audioThumb(1000, formatManagerToUse, cacheToUse), //1000 points to build waveplot aka downsampling
+    juce::AudioThumbnailCache& cacheToUse) :  
+    audioThumb(1000, formatManagerToUse, cacheToUse), // 1000 points to build waveplot aka downsampling
     fileLoaded(false),
     position(0)
 {
@@ -31,10 +25,6 @@ WaveformDisplay::~WaveformDisplay()
 {
 }
 
-/// <summary>
-/// Draws and styles the component.
-/// </summary>
-/// <param name="g"></param>
 void WaveformDisplay::paint(juce::Graphics& g)
 {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));   // clear the background
@@ -82,10 +72,6 @@ void WaveformDisplay::resized()
     // Nothing to add here.
 }
 
-/// <summary>
-/// Loads up the URL that is passed to this function and uses it to paint the waveform.
-/// </summary>
-/// <param name="audioURL"></param>
 void WaveformDisplay::loadURL(juce::URL audioURL)
 {
     audioThumb.clear(); //clear previous audio
@@ -102,24 +88,16 @@ void WaveformDisplay::loadURL(juce::URL audioURL)
     }
 }
 
-/// <summary>
-/// Repaints.
-/// </summary>
-/// <param name="source"></param>
 void WaveformDisplay::changeListenerCallback(juce::ChangeBroadcaster* source)
 {
     repaint();
 }
 
-/// <summary>
-/// Changes the relative position of the playhead, i.e. the waveform square which tracks the playtime of current song.
-/// </summary>
-/// <param name="pos"></param>
 void WaveformDisplay::setPositionRelative(double pos)
 {
     //only repaint if the position has changed
     if (pos != position) {
-        position = pos; // hold the input position in a local position var
+        position = pos; 
         repaint();
     }
 }

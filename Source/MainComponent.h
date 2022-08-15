@@ -13,6 +13,7 @@ public:
      * Constructor
      */
     MainComponent(); 
+
     /**
      * Destructor
      */

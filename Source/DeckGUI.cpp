@@ -122,8 +122,6 @@ DeckGUI::~DeckGUI()
 
 void DeckGUI::paint(juce::Graphics& g)
 {
-    // sliderLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::coral);
-
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));   // clear the background
     g.setColour(juce::Colours::coral);
     g.setFont(14.0f);
