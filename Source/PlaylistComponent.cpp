@@ -26,7 +26,8 @@ PlaylistComponent::PlaylistComponent(DeckGUI* _deckGUI1,
     
     // search songs
     addAndMakeVisible(searchBox);
-    searchBox.setTextToShowWhenEmpty("Search for song name and press Enter.", juce::Colours::lightcoral);
+    searchBox.setTextToShowWhenEmpty("Search for song name and press Enter.",
+                           juce::Colours::lightcoral);
     searchBox.onReturnKey = [this] { searchPlaylist(searchBox.getText()); };
 
     // list of songs
@@ -105,7 +106,7 @@ void PlaylistComponent::paintRowBackground(juce::Graphics& g,
         g.fillAll(juce::Colours::coral);
     }
     else {
-        g.fillAll(juce::Colours::coral);
+        g.fillAll(juce::Colours::lightgrey);
     }
 }
 

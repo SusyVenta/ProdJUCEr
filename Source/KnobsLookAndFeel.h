@@ -15,8 +15,10 @@
 class KnobsLookAndFeel : public juce::LookAndFeel_V4
 {
 public:
+    /** Constructor */
     KnobsLookAndFeel();
 
+    /** Overrides parent class method to use loaded image for knobs */
     void drawRotarySlider(juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
         float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider) override;
 

@@ -10,7 +10,7 @@
 
 #include "KnobsLookAndFeel.h"
 
-//==============================================================================
+
 KnobsLookAndFeel::KnobsLookAndFeel()
 {
     juce::File knobImageFile1 = juce::File::getSpecialLocation
@@ -18,7 +18,7 @@ KnobsLookAndFeel::KnobsLookAndFeel()
     img1 = juce::ImageCache::getFromFile(knobImageFile1);
 }
 
-//==============================================================================
+
 void KnobsLookAndFeel::drawRotarySlider(juce::Graphics& g,
     int x, int y, int width, int height, float sliderPos,
     float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider)

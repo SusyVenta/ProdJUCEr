@@ -40,6 +40,8 @@ DeckGUI::DeckGUI(int _id,
     freezeSlider.addListener(this);
 
     // track position slider
+    sliderLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::coral); // set slider control color
+    posSlider.setLookAndFeel(&sliderLookAndFeel);
     posSlider.setRange(0.0, 1.0);
     posSlider.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, true, 200, 20);
     posSlider.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
@@ -120,9 +122,7 @@ DeckGUI::~DeckGUI()
 
 void DeckGUI::paint(juce::Graphics& g)
 {
-    sliderLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::coral);
-
-    posSlider.setLookAndFeel(&sliderLookAndFeel);
+    // sliderLookAndFeel.setColour(juce::Slider::thumbColourId, juce::Colours::coral);
 
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));   // clear the background
     g.setColour(juce::Colours::coral);

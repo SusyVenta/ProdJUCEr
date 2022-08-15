@@ -60,11 +60,11 @@ void DJAudioPlayer::loadURL(juce::URL audioURL)
 
 void DJAudioPlayer::setGain(double gain)
 {
-    if (gain < 0 || gain > 1.0 || gain == 0) {
-        std::cout << "DJAudioPlayer::setGain gain should be between 0 and 1" << std::endl;
+    if (gain <= 0 || gain > 1.0) {
         if (gain < 0)
         {
-            gain = 1; //avoid exception error. Set minimum.
+            // Set minimum to avoid error
+            gain = 1; 
         }
     }
     else {
