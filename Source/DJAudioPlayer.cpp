@@ -58,10 +58,6 @@ void DJAudioPlayer::loadURL(juce::URL audioURL)
     }
 };
 
-/// <summary>
-/// Sets the volume output of the player.
-/// </summary>
-/// <param name="gain">Takes in a double as a value for the volume. Between 0 and 1.</param>
 void DJAudioPlayer::setGain(double gain)
 {
     if (gain < 0 || gain > 1.0 || gain == 0) {
@@ -76,17 +72,13 @@ void DJAudioPlayer::setGain(double gain)
     }
 };
 
-/// <summary>
-/// Controls the playback speed of the song. Controlled by a slider created in DeckGUI. Can speed up up to x3 times.
-/// </summary>
-/// <param name="ratio">Takes in a double as a value to be used to set the resampleSource, i.e. playback speed.</param>
 void DJAudioPlayer::setSpeed(double ratio)
 {
     if (ratio < 0 || ratio > 3.0 || ratio == 0) {
-        std::cout << "DJAudioPlayer::setSpeed ratio should be between 0 and 3" << std::endl;
         if (ratio < 0)
         {
-            ratio = 1; //avoid exception error. Set minimum.
+            // Set minimum to avoid error
+            ratio = 1; 
         }
     }
     else {
@@ -102,10 +94,10 @@ void DJAudioPlayer::setPosition(double posInSecs)
 void DJAudioPlayer::setPositionRelative(double pos)
 {
     if (pos < 0 || pos > 1 || pos == 0) {
-        std::cout << "DJAudioPlayer::setPositionRelative pos should be between 0 and 1" << std::endl;
         if (pos < 0)
         {
-            pos = 0.01; //avoid exception error. Set minimum.
+            // Set minimum to avoid error
+            pos = 0.01;
         }
     }
     else {
@@ -127,13 +119,9 @@ void DJAudioPlayer::stop()
 
 double DJAudioPlayer::getPositionRelative()
 {
-    // if we dont divide, it will return the position in seconds which is not relative
-    //check for division by zero otherwise get error
-    if (transportSource.getLengthInSeconds() == 0) {
-        //std::cout << "Error, cannot divide by zero in DJAudioPlayer::getPositionRelative()" << std::endl;
-        //DBG("Error in DJAudioPlayer::getPositionRelative(). transportSource.getLengthInSeconds() equals to zero ");
-    }
-    else {
+    // check for division by zero otherwise get error
+    if (transportSource.getLengthInSeconds() != 0) {
+        // if we dont divide, it will return the position in seconds which is not relative
         return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
     }
 }
@@ -147,12 +135,8 @@ double DJAudioPlayer::getLengthInSeconds()
 
 void DJAudioPlayer::setFreeze(float freezeAmt)
 {
-    DBG("DJAudioPlayer::setDamping called");
-    if (freezeAmt < 0 || freezeAmt > 1.0)
+    if (freezeAmt >= 0 && freezeAmt <= 1.0)
     {
-        DBG("DJAudioPlayer::setDamping amount should be between 0 and 1.0");
-    }
-    else {
         reverbParameters.freezeMode = freezeAmt;
         reverbSource.setParameters(reverbParameters);
     }
@@ -160,12 +144,8 @@ void DJAudioPlayer::setFreeze(float freezeAmt)
 
 void DJAudioPlayer::setWetLevel(float wetLevel)
 {
-    DBG("DJAudioPlayer::setWetLevel called");
-    if (wetLevel < 0 || wetLevel > 1.0)
+    if (wetLevel >= 0 && wetLevel <= 1.0)
     {
-        DBG("DJAudioPlayer::setWetLevel level should be between 0 and 1.0");
-    }
-    else {
         reverbParameters.wetLevel = wetLevel;
         reverbSource.setParameters(reverbParameters);
     }
